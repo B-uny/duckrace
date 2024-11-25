@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+  <style>
+    /* CSS code for styling the game elements */
+	
+	body {
+		font-family: 'lato', sans-serif;
+		background-image: url("Grass.jpg");
+		background-size: cover;
+		margin: 0;
+		border: solid black;
+		padding:2%;
+		border-bottom: 10px solid black;
+	}
+
+    #container {
+		width: 1100px;
+		height: 85%;
+		border: 2px solid black;
+		position: relative;
+		overflow: hidden;
+		background-image: url("fl.gif"); /* You can use any image of a background here */
+		background-size: cover;
+		background-repeat: no-repeat;
+		display: flex;
+		flex-direction: column; /* Arrange ducks in a column */
+		align-items: flex-start; /* Start ducks from the left */
+		gap: 5px; /* Spacing between ducks */
+		border-radius: 5px;
+		box-shadow: 0px 0px 9px 0px rgba(0,0,0,.5);
+    }
+
+    .duck {
+		width: 40px;
+		height: 40px;
+		position: relative;
+		bottom: 0;
+		left: 0; /* Set the left position to 0 to start from the left edge */
+		background-size: cover;
+		-webkit-transform: scaleX(-1);
+		transform: scaleX(-1);
+
+    }
+	
+	button {
+		background-color: #04AA6D; /* Green */
+		border: none;
+		color: white;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		font-size: 25px;
+		text-align: center;
+		border-radius: 5px;
+		box-shadow: 0px 0px 9px 0px rgba(0,0,0,.5);
+	}
+	
+	#mainArea {
+		text-align: center;
+	}
+    
+    #input {
+		margin: 10px;
+    }
+
+    #start {
+		margin: 10px;
+    }
+
+    #remove {
+		display none;
+		position:relative;
+		top: -10%;
+		left: 50%;
+		width:30em;
+		height:18em;
+		margin-top: -9em; /*set to a negative number 1/2 of your height*/
+		margin-left: -15em; /*set to a negative number 1/2 of your width*/
+		align-items: center !important;
+		justify-content: center !important;
+    }
+
+    #result {
+		display: none;
+		position:relative;
+		top: 20%;
+		left: 60%;
+		width:30em;
+		height:18em;
+		margin-top: -9em; /*set to a negative number 1/2 of your height*/
+		margin-left: -15em; /*set to a negative number 1/2 of your width*/
+	    font-size: 25px;
+	    color: white;
+	    align-items: center !important;
+	    justify-content: center !important; 
+    }
+
+    #winner {
+		display: none;
+		position:relative;
+		top: 20%;
+		left: 60%;
+		width:100%;
+		height:100%;
+		margin-top: -9em; /*set to a negative number 1/2 of your height*/
+		margin-left: -15em; /*set to a negative number 1/2 of your width*/
+		background-repeat: no-repeat;  
+    }
+	
+	#overlay {
+		display: none;
+		position: fixed; /* Sit on top of the page content */
+		align-items: center !important;
+		justify-content: center !important;
+		width: 100%; /* Full width (cover the whole page) */
+		height: 100%; /* Full height (cover the whole page) */
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0,0,0,0.5); /* white background with opacity */
+		background-image: url("Confetti.gif");
+		z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+		cursor: pointer; /* Add a pointer on hover */
+		top: 50%;
+		transform: translate(0, -50%);
+		padding: 10px;
+		background-size: cover;
+	}
+	
+	#players {
+		display: flex;
+		flex-direction: column;
+		width: 20%;  
+		position: relative;
+		top: -3px;
+	}
+
+	#players input {
+		width: 90%;
+		position: relative;
+	}
+	
+	#players label {
+		width: 70%;
+		position: relative;
+	}
+	
+	#listPlayers tr{
+		background-color: #04AA6D;
+		box-shadow: 0px 0px 9px 0px rgba(0,0,0,.5);
+		border-radius: 2px;
+        padding: 11px 11px;
+	 	display: relative;
+		justify-content: space-between;
+		margin-bottom: 20px;
+		font-size: 15px !important;
+		width: 80%;
+		border-style : hidden!important;
+	}
+	
+	#listPlayers td{
+		padding: 11px 11px;
+		display: relative;
+		justify-content: space-between;
+		margin-bottom: 20px;
+		width: 50%;
+		border-radius: 5px;
+		height: 21px;
+	}
+	
+	#row1{
+		display:flex;
+		flex-direction:row;
+    }
+	
+	#video {
+		position: fixed; /* Sit on top of the page content */
+		align-items: right !important;
+		justify-content: right !important;
+		top: 5%;
+		left: 80%;
+		border-color:#04AA6D;
+		border: 10px solid;
+		width: 250px;
+		height: 250px;
+		border-radius: 5px;
+		box-shadow: 0px 0px 9px 0px rgba(0,0,0,.5);
+	}
+	
+	input {				
+		border: none;
+		border-radius: 5px;
+		box-shadow: 0px 0px 9px 0px rgba(0,0,0,.5);
+	}
+	
+	#chat {
+		position: fixed; /* Sit on top of the page content */
+		align-items: right !important;
+		justify-content: right !important;
+		top: 30%;
+		left: 80%;
+		border-color:black;
+		border: 10px solid;
+		border-radius: 5px;
+		box-shadow: 0px 0px 9px 0px rgba(0,0,0,.5);
+	}
+#bottom-bar {
+  position: fixed;
+  background-color: black;
+  overflow: hidden;
+  z-index: 1;
+  height: 65px;
+  bottom: 10px;
+  width: 120%;
+  right: 0.1%;
+  bottom: -2%;
+  text-align: right !important;
+}
+#bottom-text {
+color: gray;
+text-align: right;
+valign="top"
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+  position: fixed;
+  top: 0;
+  height: 38px;
+  width: 100%;
+  right: 0.1%;
+  vertical-align: text-top;
+}
+
+li {
+  float: left;
+  cursor: pointer;
+}
+
+li a {
+  display: block;
+  color: white;
+  vertical-align: text-top;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: #04AA6D;
+}
+
+
+  </style>
+  <script>
+function playMusic(){
+  var music = new Audio('sound.mp3');
+  music.play();
+  var music2 = new Audio('backingmusic.mp3');
+  music2.play();
+  }
+
+</script>
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+  <script src="https://apis.google.com/js/api:client.js"></script>
+  <script>
+  var googleUser = {};
+  var startApp = function() {
+    gapi.load('auth2', function(){
+      // Retrieve the singleton for the GoogleAuth library and set up the client.
+      auth2 = gapi.auth2.init({
+        client_id: '244939365505-rr4lm18f2a0r4gu06sohigq5a67cq2lm.apps.googleusercontent.com.apps.googleusercontent.com',
+        cookiepolicy: 'single_host_origin',
+        // Request scopes in addition to 'profile' and 'email'
+        //scope: 'additional_scope'
+      });
+      attachSignin(document.getElementById('customBtn'));
+    });
+  };
+
+  function attachSignin(element) {
+    console.log(element.id);
+    auth2.attachClickHandler(element, {},
+        function(googleUser) {
+          document.getElementById('name').innerText = "Signed in: " +
+              googleUser.getBasicProfile().getName();
+        }, function(error) {
+          alert(JSON.stringify(error, undefined, 2));
+        });
+  }
+  </script>
+</script>
+
+</head>
+<body onload="createDucks()">
+<ul>
+  <li><a class="active" href="duck-race.com">Home</a></li>
+  <li><a>
+  <div id="gSignInWrapper">
+    <div id="customBtn" class="customGPlusSignIn">
+      <span class="icon"></span>
+      <span class="buttonText">Sign-in</span>
+    </div>
+  </div>
+  <div id="name"></div>
+  <script>startApp();</script>
+  </div></a></li>
+  <li><a href="spinner.html">Spinner</a></li>
+
+</ul>
+<audio src="backingmusic.mp3" allow="autoplay" muted autoplay loop></audio>
+
+<div id="video">
+ <video src="" ></video>
+
+<button id='flipCamera'>Flip</button>
+
+<script>
+  var front = false;
+var video = document.querySelector('video');
+document.getElementById('flipCamera').style.visibility='hidden';
+  document.getElementById('flipCamera').onclick = function() { front = !front; };
+  var constraints = { video: { facingMode: (front? "user" : "environment"), width: 250, height: 250  } };
+  navigator.mediaDevices.getUserMedia(constraints)
+  .then(function(mediaStream) {
+    video.srcObject = mediaStream;
+    video.onloadedmetadata = function(e) {
+    video.play();
+};
+})
+.catch(function(err) { console.log(err.name + ": " + err.message); })
+</script>
+
+</div>
+
+<div id="overlay">
+
+  <div id="result">
+    <!-- This is where the result will be displayed -->
+  </div>
+  <div  id="winner">
+    <!-- This is where the winner will be shown -->
+  </div>
+  	<div id="remove">
+			<button onclick="removeWinner()">Remove the winner</button>
+		</div>
+		</div>
+		
+<div id="row1">
+  <div id="container">
+    <!-- This is where the ducks will be displayed -->
+  </div>
+ 
+  <div id="players">
+    <!-- This is where the ducks will be displayed -->
+	<table id="listPlayers">
+	
+	</table>
+  </div>
+</div>
+  <div id="mainArea">
+	<div id="input">
+    <label for="num">Enter the number of ducks (1-16):</label>
+    <input onchange="createDucks()" type="number" id="num" name="num" min="1" max="16" value="16">
+		</div>
+		<div id="start">
+			<button onclick="startRace()">Start the race</button>
+		</div>
+	
+  </div>
+
+  
+  <script>
+    // JavaScript code for the game logic
+    var container = document.getElementById("container"); // The game container
+    var numInput = document.getElementById("num"); // The input for the number of ducks
+    var startButton = document.getElementById("start"); // The button to start the race
+    var removeButton = document.getElementById("remove"); // The button to remove the winner
+    var resultDiv = document.getElementById("result"); // The div to display the result
+    var winnerDiv = document.getElementById("winner"); // The div to show the winner
+    var ducks = []; // An array to store the duck elements
+	var duckNames = [];
+    var winner = null; // A variable to store the winner
+	var winnerName = null;
+    var interval = null; // A variable to store the interval for the animation
+    var images = ["duck1.png", "duck2.png", "duck3.png", "duck4.png", "duck5.png", "duck6.png", "duck7.png", "duck8.png", "duck9.png", "duck10.png", "duck11.png", "duck12.png", "duck13.png", "duck14.png", "duck15.png", "duck16.png"]; // An array to store the image names of the ducks
+   //var for 16 ducks
+   //var images = ["duck1.png", "duck2.png", "duck3.png", "duck4.png", "duck5.png", "duck6.png", "duck7.png", "duck8.png", "duck9.png", "duck10.png", "duck11.png", "duck12.png", "duck13.png", "duck14.png", "duck15.png", "duck16.png"]; // An array to store the image names of the ducks
+
+    // A function to create and display the ducks
+    function createDucks() {
+      // Clear the container and the ducks array
+      container.innerHTML = "";
+	  listPlayers.innerHTML = ""
+      ducks = [];
+	  duckNames = ["",];
+      // Get the number of ducks from the input
+      var num = numInput.value;
+      // Loop through the number of ducks
+      for (var i = 0; i < num; i++) {
+        // Create a new duck element
+        var duck = document.createElement("div");
+        // Add the duck class to it
+		let table = document.getElementById("listPlayers");
+		let row = document.createElement("tr");
+		let c1 = document.createElement("td");
+		let label1 = document.createElement("label");
+		let c2 = document.createElement("td");
+		let name1 = document.createElement("input");
+		name1.setAttribute("id", "player"+(1+i));
+		label1.innerText = "Player "+(1+i)+" Name";
+		label1.setAttribute("for", "player"+(1+i));
+				
+        duck.classList.add("duck");
+        // Set a random left position for it
+        duck.style.left = 0;
+        // Set a random image for it
+        duck.style.backgroundImage = "url(" + images[i] + ")";
+        // Append it to the container
+        container.appendChild(duck);
+		// Push it to the ducks array
+        ducks.push(duck);
+		//push names to ducknames array
+		row.appendChild(c1);
+        c1.appendChild(label1);
+        row.appendChild(c2);
+        c2.appendChild(name1);
+        table.appendChild(row);
+		// Append row to table body
+		duckNames.push(row);
+		//push names to ducknames array
+		
+      }
+    }
+
+    // A function to start the race
+    function startRace() {
+      //play the music
+	  playMusic ();
+	
+      winner = null;
+	  winnerName = null;
+      resultDiv.innerHTML = "";
+      // Hide the winner div
+      winnerDiv.style.display = "none";
+	  overlay.style.display = "none";
+      // Set the interval for the animation
+      interval = setInterval(moveDucks, 100); // Move the ducks every 100 milliseconds
+    }
+
+    // A function to move the ducks
+    function moveDucks() {
+      // Loop through the ducks array
+	
+      for (var i = 0; i < ducks.length; i++) {
+        // Get the current duck
+        var duck = ducks[i];
+		var row = duckNames[i+1];
+        // Get the current left position of the duck
+		var left = parseInt(duck.style.left);
+	
+        // Increase the left position by a random amount
+        left += Math.floor(Math.random() * 10) - 1;
+        // Set the new left position for the duck
+        duck.style.left = left + "px";
+        // Check if the duck has reached the right edge of the container
+        if (left >= 1050) {
+          // Stop the interval
+          clearInterval(interval);
+          // Set the winner to the current duck
+          winner = duck;
+		  // Set the winner name to the current duck
+		  winnerName = row;
+          // Display the result
+		  overlay.style.display = "block";
+		  resultDiv.style.display = "block";
+		  resultDiv.appendChild = winner;
+          resultDiv.innerHTML = "The winning duck is..."+$('#player'+(i+1)).val();
+		  console.log(ducks[i]);
+		  console.log(duckNames[i+1]);
+		  
+          // Show the winner div
+          winnerDiv.style.display = "block";
+          // Set the same image as the winner for the winner div
+          winnerDiv.style.backgroundImage = winner.style.backgroundImage;
+          // Break the loop
+		
+          break;
+		  
+        }
+      }
+    }
+
+    // A function to remove the winner
+    function removeWinner() {
+	var getCurrentQty = parseInt(document.getElementById('num').value);
+	console.log(getCurrentQty);
+	var setNewQty = getCurrentQty - 1;
+	console.log(setNewQty);
+      // Check if there is a winner
+      if (winner) {
+	    // Create the ducks
+	  for (var i = 0; i < ducks.length; i++) {
+        // Get the current duck
+        var duck = ducks[i];
+		duck.style.left = 0;
+		}
+      // Reset the winner and the result
+        // Remove the winner from the container
+        container.removeChild(winner);
+		// Remove the winner from the table
+        listPlayers.removeChild(winnerName);
+        // Remove the winner from the ducks array
+        ducks.splice(ducks.indexOf(winner), 1);
+		// Remove the winner name from the duckNames array
+        duckNames.splice(duckNames.indexOf(winnerName), 1);
+        // Reset the winner and the result
+        winner = null;
+		winnerName = null;
+        resultDiv.innerHTML = "";
+        // Hide the winner div
+        winnerDiv.style.display = "none";
+		overlay.style.display = "none";
+		resultDiv.style.display = "none";
+		document.getElementById("num").value = setNewQty;
+      }
+    }
+  </script>
+  <iframe id="chat" src="https://chitchatter.im/public/2114403a-b26d-4db5-bee2-49e43961c232?embed=1"  width="250" height="450" />
+<div id="bottom-bar">
+<p id="bottom-text">Copright duck-race.com</p>
+</div>
+</body>
+</html>
